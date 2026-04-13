@@ -1,0 +1,43 @@
+# Minimal smoke test config (~1 min on CPU).
+# Usage: python main.py train --config config.smoke.yaml
+
+task: train
+
+training:
+  code_type: repetition
+  code_distance: 5
+  error_rate: 0.1
+  batch_size: 4
+  device: cpu
+
+  d_model: 32
+  n_unique: 2
+  d_ff: 64
+  depth_multiplier: 2
+
+  teacher: mwpm
+  objective:
+    corrections: 1.0
+  rl_algorithm: reinforce
+  pos_weight: 1.0
+
+  optimizer_type: adamw
+  learning_rate: 0.005
+  grad_clip: 1.0
+  warmup_epochs: 0
+  lr_schedule: constant
+  min_lr: 0.01
+
+  steps_per_epoch: 2
+  num_rounds: 1
+  accumulation_steps: 1
+  use_amp: false
+  num_epochs: 2
+  seed: 42
+  log_every: 1
+  checkpoint_every: 0
+  eval_every: 0
+  eval_batches: 2
+  eval_rounds: 1
+  checkpoint_dir: data/checkpoints_smoke
+  metrics_path: ""

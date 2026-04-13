@@ -1,0 +1,79 @@
+# Default training + evaluation config for the graph decoder.
+# Usage: python main.py all --config config.yaml
+#
+# This uses the GNN processor (best performance). For the transformer
+# processor, see config_transformer.yaml or set processor_type: transformer
+# with n_heads and graph_modes.
+
+task: all
+
+training:
+  code_type: surface
+  code_distance: 7
+  error_rate: 0.1
+  batch_size: 512
+  device: cuda
+
+  # Model architecture — GNN (123K params, matches MWPM at d=3-7)
+  processor_type: gnn
+  d_model: 96
+  n_unique: 2
+  d_ff: 192
+  depth_multiplier: 2
+
+  teacher: mwpm
+  objective: {corrections: 1.0}
+  rl_algorithm: reinforce
+  pos_weight: 5.0
+
+  optimizer_type: adamw
+  learning_rate: 0.001
+  grad_clip: 1.0
+  warmup_epochs: 5
+  lr_schedule: cosine
+  min_lr: 0.01
+
+  steps_per_epoch: 100
+  num_rounds: 3
+  accumulation_steps: 1
+  use_amp: true
+  num_epochs: 300
+  seed: 42
+  log_every: 5
+  checkpoint_every: 0
+  eval_every: 25
+  eval_batches: 100
+  eval_rounds: 3
+  eval_temperature: 0.3
+  checkpoint_dir: data/checkpoints
+  metrics_path: data/metrics.csv
+
+  phases:
+    - epochs: 100
+      objective: {corrections: 1.0}
+      error_rate: [0.01, 0.15]
+      num_rounds: 3
+      code_distances: [3, 5, 7]
+      teacher: mwpm
+    - epochs: 200
+      objective: {corrections: 1.0}
+      error_rate: [0.01, 0.15]
+      num_rounds: 3
+      code_distances: [3, 5, 7, 9, 11]
+      teacher: mwpm
+
+evaluation:
+  code_type: surface
+  code_distances: [3, 5, 7, 9, 11]
+  decoders: [none, mwpm, baseline]
+  error_rates: [0.01, 0.03, 0.05, 0.08, 0.10]
+  batch_size: 512
+  num_batches: 200
+  num_rounds: 3
+  output_dir: data/evaluation
+  progress_level: 1
+  print_ler_table: true
+  skip_existing: false
+  device: cuda
+  baseline_checkpoint: data/checkpoints/checkpoint_best.pt
+  eval_temperature: 0.3

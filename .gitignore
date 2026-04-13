@@ -1,0 +1,35 @@
+# Training/evaluation outputs
+data/
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.egg-info/
+dist/
+build/
+
+# Virtual environments
+.venv/
+venv/
+env/
+
+# IDE
+.cursor/
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+
+# Secrets
+.env
+.env.local
+
+# Pytest
+.pytest_cache/
+
+# Experiment-specific configs and notes
+reference_benchmarks.md
+config_gnn.yaml
+config_transformer.yaml
