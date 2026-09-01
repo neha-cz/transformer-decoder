@@ -1,3 +1,5 @@
+## Fork to improve this architecture
+
 # Transformer Decoder for Quantum Error Correction
 
 A graph-based neural decoder for quantum error correction (QEC) on Tanner graphs.
